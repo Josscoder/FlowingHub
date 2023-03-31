@@ -14,6 +14,7 @@ import josscoder.flowinghub.commons.data.ServiceInfo;
 import josscoder.flowinghub.commons.packet.Packet;
 import josscoder.flowinghub.commons.pipeline.PacketDecoder;
 import josscoder.flowinghub.commons.pipeline.PacketEncoder;
+import josscoder.flowinghub.commons.utils.PacketSerializer;
 import josscoder.flowinghub.server.pipeline.ServerPacketHandler;
 import lombok.Getter;
 
@@ -76,7 +77,7 @@ public class FlowingServer extends FlowingService {
     public void sendPacket(InetSocketAddress inetSocketAddress, Packet packet) {
         ByteBuf buffer = channel.alloc().buffer();
         buffer.writeByte(packet.getPid());
-        packet.encode(buffer);
+        packet.encode(new PacketSerializer(buffer));
 
         Channel connection = clientSessions.get(inetSocketAddress);
         connection.writeAndFlush(buffer).addListener(future -> {

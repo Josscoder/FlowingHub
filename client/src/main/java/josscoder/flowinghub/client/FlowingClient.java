@@ -15,6 +15,7 @@ import josscoder.flowinghub.commons.data.ServiceInfo;
 import josscoder.flowinghub.commons.packet.Packet;
 import josscoder.flowinghub.commons.pipeline.PacketDecoder;
 import josscoder.flowinghub.commons.pipeline.PacketEncoder;
+import josscoder.flowinghub.commons.utils.PacketSerializer;
 import lombok.Getter;
 
 import java.net.InetSocketAddress;
@@ -71,7 +72,7 @@ public class FlowingClient extends FlowingService {
     public void sendPacket(Packet packet) {
         ByteBuf buffer = channel.alloc().buffer();
         buffer.writeByte(packet.getPid());
-        packet.encode(buffer);
+        packet.encode(new PacketSerializer(buffer));
 
         channel.writeAndFlush(buffer).addListener(future -> {
             if (!future.isSuccess()) {
