@@ -23,6 +23,7 @@ public class ClientPacketHandler extends PacketHandler<FlowingClient> {
         }
 
         if (authResponsePacket.status.equals(AuthResponsePacket.Status.INVALID_TOKEN)) {
+            service.shutdown();
             service.getLogger().error("The 'authToken' is not the same as the server you sent the request to, you will not be able to use the communication bridge");
         }
     }

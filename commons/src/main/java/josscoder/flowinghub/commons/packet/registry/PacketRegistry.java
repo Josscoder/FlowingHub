@@ -3,6 +3,7 @@ package josscoder.flowinghub.commons.packet.registry;
 import josscoder.flowinghub.commons.packet.Packet;
 import josscoder.flowinghub.commons.packet.base.AuthRequestPacket;
 import josscoder.flowinghub.commons.packet.base.AuthResponsePacket;
+import josscoder.flowinghub.commons.packet.base.MessagePacket;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -16,7 +17,8 @@ public class PacketRegistry {
     static {
         registerPacket(
                 new AuthRequestPacket(),
-                new AuthResponsePacket()
+                new AuthResponsePacket(),
+                new MessagePacket()
         );
     }
 

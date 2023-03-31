@@ -6,7 +6,9 @@ import josscoder.flowinghub.commons.data.ServiceInfo;
 import josscoder.flowinghub.commons.packet.Packet;
 import josscoder.flowinghub.commons.packet.base.AuthRequestPacket;
 import josscoder.flowinghub.commons.packet.base.AuthResponsePacket;
+import josscoder.flowinghub.commons.packet.base.MessagePacket;
 import josscoder.flowinghub.commons.pipeline.PacketHandler;
+import josscoder.flowinghub.server.FlowingServer;
 
 import java.net.InetSocketAddress;
 
@@ -14,7 +16,7 @@ public class ServerPacketHandler extends PacketHandler<josscoder.flowinghub.serv
 
     private static final String AUTH_TOKEN_ATTRIBUTE_KEY = "auth_token";
 
-    public ServerPacketHandler(josscoder.flowinghub.server.FlowingServer service) {
+    public ServerPacketHandler(FlowingServer service) {
         super(service);
     }
 
@@ -32,6 +34,7 @@ public class ServerPacketHandler extends PacketHandler<josscoder.flowinghub.serv
                 if (authRequestPacket.authToken.equalsIgnoreCase(authToken)) {
                     authResponsePacket.status = AuthResponsePacket.Status.SUCCESS;
                     authResponsePacket.serverId = serviceInfo.getId();
+                    ctx.channel().attr(AttributeKey.valueOf(AUTH_TOKEN_ATTRIBUTE_KEY)).set(authToken);
                 } else {
                     authResponsePacket.status = AuthResponsePacket.Status.INVALID_TOKEN;
                 }
@@ -69,6 +72,8 @@ public class ServerPacketHandler extends PacketHandler<josscoder.flowinghub.serv
 
     @Override
     public void handlePacket(Packet packet) {
-
+        if (packet instanceof MessagePacket messagePacket) {
+            System.out.println("Message received " + messagePacket.message);
+        }
     }
 }
