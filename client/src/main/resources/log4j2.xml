@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout disableAnsi="false"
+                           pattern="%highlight{%-5level > [NetClient]: %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=cyan bold, TRACE=blue}"/>
+        </Console>
+        <File name="FileAppender" fileName="logs/netclient-${date:yyyyMMdd}.log" immediateFlush="false" append="true">
+            <PatternLayout pattern="%-5level > [NetClient]: %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
