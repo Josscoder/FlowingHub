@@ -92,7 +92,7 @@ public class FlowingClient extends FlowingService {
             }
         });
 
-        if (packet.isAsync()) {
+        if (packet.isAsyncPacket()) {
             CompletableFuture.runAsync(runnable);
         } else {
             runnable.run();

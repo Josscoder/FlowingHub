@@ -59,4 +59,13 @@ public record PacketSerializer(@Getter ByteBuf buffer) {
     public byte readByte() {
         return buffer.readByte();
     }
+
+    public void writeBytes(byte[] b) {
+        buffer.writeInt(b.length);
+        buffer.writeBytes(b);
+    }
+
+    public byte[] readBytes() {
+        return buffer.readBytes(buffer.readInt()).array();
+    }
 }

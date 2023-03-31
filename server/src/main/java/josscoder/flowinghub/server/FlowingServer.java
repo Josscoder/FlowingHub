@@ -1,6 +1,5 @@
 package josscoder.flowinghub.server;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -81,7 +80,6 @@ public class FlowingServer extends FlowingService {
         return future;
     }
 
-    @CanIgnoreReturnValue
     public CompletableFuture<Void> sendPacket(InetSocketAddress address, Packet packet) {
         if (channel == null || !channel.isOpen()) {
             return CompletableFuture.completedFuture(null);
@@ -104,7 +102,7 @@ public class FlowingServer extends FlowingService {
             }
         });
 
-        if (packet.isAsync()) {
+        if (packet.isAsyncPacket()) {
             CompletableFuture.runAsync(runnable);
         } else {
             runnable.run();

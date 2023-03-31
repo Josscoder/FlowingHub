@@ -1,6 +1,5 @@
 package josscoder.flowinghub.commons;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.netty.channel.ChannelFuture;
 import josscoder.flowinghub.commons.data.ServiceInfo;
 import josscoder.flowinghub.commons.packet.Packet;
@@ -23,7 +22,6 @@ public abstract class FlowingService {
 
     public abstract ChannelFuture startup() throws InterruptedException;
 
-    @CanIgnoreReturnValue
     public abstract CompletableFuture<Void> sendPacket(Packet packet);
 
     public abstract void shutdown();
