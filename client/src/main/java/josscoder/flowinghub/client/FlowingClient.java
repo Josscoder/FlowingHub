@@ -10,6 +10,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import josscoder.flowinghub.client.handler.ClientPacketHandler;
+import josscoder.flowinghub.commons.FlowingService;
 import josscoder.flowinghub.commons.data.ServiceInfo;
 import josscoder.flowinghub.commons.packet.Packet;
 import josscoder.flowinghub.commons.pipeline.PacketDecoder;
@@ -18,10 +19,10 @@ import lombok.Getter;
 
 import java.net.InetSocketAddress;
 
-public class FlowingClient extends josscoder.flowinghub.commons.FlowingService {
+public class FlowingClient extends FlowingService {
 
     @Getter
-    private static josscoder.flowinghub.client.FlowingClient instance;
+    private static FlowingClient instance;
 
     private Channel channel;
     private NioEventLoopGroup group;
@@ -48,7 +49,7 @@ public class FlowingClient extends josscoder.flowinghub.commons.FlowingService {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new PacketEncoder());
                             pipeline.addLast(new PacketDecoder());
-                            pipeline.addLast(new ClientPacketHandler(josscoder.flowinghub.client.FlowingClient.getInstance()));
+                            pipeline.addLast(new ClientPacketHandler(FlowingClient.getInstance()));
                         }
                     });
 

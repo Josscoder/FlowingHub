@@ -13,7 +13,7 @@ public abstract class FlowingService {
 
     public FlowingService(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
-        this.logger = LogManager.getLogger(josscoder.flowinghub.commons.FlowingService.class);
+        this.logger = LogManager.getLogger(FlowingService.class);
     }
 
     public abstract void startup() throws InterruptedException;
