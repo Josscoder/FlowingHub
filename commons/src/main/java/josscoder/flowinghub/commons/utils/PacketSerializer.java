@@ -2,11 +2,9 @@ package josscoder.flowinghub.commons.utils;
 
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.nio.charset.StandardCharsets;
 
-@RequiredArgsConstructor
 public record PacketSerializer(@Getter ByteBuf buffer) {
 
     public void writeString(String charset) {
