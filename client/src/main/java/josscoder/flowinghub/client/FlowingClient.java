@@ -1,10 +1,7 @@
 package josscoder.flowinghub.client;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -34,41 +31,43 @@ public class FlowingClient extends FlowingService {
     }
 
     @Override
-    public void startup() throws InterruptedException {
+    public ChannelFuture startup() throws InterruptedException {
         group = new NioEventLoopGroup();
-        try {
-            InetSocketAddress inetSocketAddress = new InetSocketAddress(serviceInfo.getAddress(), serviceInfo.getPort());
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(serviceInfo.getAddress(), serviceInfo.getPort());
 
-            Bootstrap bootstrap = new Bootstrap()
-                    .group(group)
-                    .channel(NioSocketChannel.class)
-                    .remoteAddress(inetSocketAddress)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) {
-                            ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new PacketEncoder());
-                            pipeline.addLast(new PacketDecoder());
-                            pipeline.addLast(new ClientPacketHandler(FlowingClient.getInstance()));
-                        }
-                    });
+        Bootstrap bootstrap = new Bootstrap()
+                .group(group)
+                .channel(NioSocketChannel.class)
+                .remoteAddress(inetSocketAddress)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel ch) {
+                        ChannelPipeline pipeline = ch.pipeline();
+                        pipeline.addLast(new PacketEncoder());
+                        pipeline.addLast(new PacketDecoder());
+                        pipeline.addLast(new ClientPacketHandler(FlowingClient.getInstance()));
+                    }
+                });
 
-            ChannelFuture future = bootstrap.connect().await();
-            if (future.isSuccess()) {
-                logger.info("NetClient has successfully connected to NetServer-TCP{}", inetSocketAddress);
+        ChannelFuture future = bootstrap.connect();
+        future.addListener(addFuture -> {
+            if (addFuture.isSuccess()) {
+                logger.info("FlowingClient has successfully connected to FlowingServer-TCP{}", inetSocketAddress);
+                channel = future.channel();
             } else {
-                logger.error("No active NetServer found to connect to");
-                return;
+                logger.error("No active FlowingServer found to connect to");
+                channel = null;
             }
+        });
 
-            channel = future.channel();
-            channel.closeFuture().sync();
-        } finally {
-            group.shutdownGracefully();
-        }
+        return future;
     }
 
     public void sendPacket(Packet packet) {
+        if (channel == null || !channel.isOpen()) {
+            return;
+        }
+
         PacketSerializer serializer = new PacketSerializer(channel.alloc().buffer());
         serializer.writeByte(packet.getPid());
 
@@ -85,7 +84,7 @@ public class FlowingClient extends FlowingService {
 
     @Override
     public void shutdown() {
-        if (channel != null && channel.isActive()) {
+        if (channel != null && channel.isOpen()) {
             channel.close();
         }
 

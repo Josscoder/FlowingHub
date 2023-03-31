@@ -16,5 +16,7 @@ public class TestServer {
         } finally {
             flowingServer.shutdown();
         }
+
+        while (true) {}
     }
 }

@@ -3,10 +3,10 @@
     <Appenders>
         <Console name="ConsoleAppender" target="SYSTEM_OUT">
             <PatternLayout disableAnsi="false"
-                           pattern="%highlight{%-5level > [NetServer]: %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=cyan bold, TRACE=blue}"/>
+                           pattern="%highlight{%-5level > [FlowingServer]: %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=cyan bold, TRACE=blue}"/>
         </Console>
-        <File name="FileAppender" fileName="logs/netserver-${date:yyyyMMdd}.log" immediateFlush="false" append="true">
-            <PatternLayout pattern="%-5level > [NetServer]: %msg%n"/>
+        <File name="FileAppender" fileName="logs/server-${date:yyyyMMdd}.log" immediateFlush="false" append="true">
+            <PatternLayout pattern="%-5level > [FlowingServer]: %msg%n"/>
         </File>
     </Appenders>
     <Loggers>

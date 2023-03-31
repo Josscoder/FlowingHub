@@ -1,10 +1,7 @@
 package josscoder.flowinghub.server;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -40,9 +37,12 @@ public class FlowingServer extends FlowingService {
     }
 
     @Override
-    public void startup() throws InterruptedException {
+    public ChannelFuture startup() throws InterruptedException {
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
+
+        ChannelFuture future;
+
         try {
             ServerBootstrap bootstrap = new ServerBootstrap()
                     .group(bossGroup, workerGroup)
@@ -57,13 +57,15 @@ public class FlowingServer extends FlowingService {
                         }
                     });
 
-            ChannelFuture future = bootstrap.bind(serviceInfo.getPort()).await();
-            if (future.isSuccess()) {
-                logger.info("A NetServer connection was created on TCP/{}, successfully", new InetSocketAddress(serviceInfo.getPort()));
-            } else {
-                logger.error("Could not create a NetServer connection, try using a different port");
-                return;
-            }
+            future = bootstrap.bind(serviceInfo.getPort());
+            future.addListener((ChannelFutureListener) addFuture-> {
+                if (addFuture.isSuccess()) {
+                    channel = addFuture.channel();
+                    logger.info("A FlowingServer connection was created on TCP/{}", new InetSocketAddress(serviceInfo.getPort()));
+                } else {
+                    logger.error("Could not create a FlowingServer connection, try using a different port");
+                }
+            });
 
             channel = future.channel();
             channel.closeFuture().sync();
@@ -71,9 +73,16 @@ public class FlowingServer extends FlowingService {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
+
+        return future;
     }
 
+
     public void sendPacket(InetSocketAddress inetSocketAddress, Packet packet) {
+        if (channel == null || !channel.isOpen()) {
+            return;
+        }
+
         PacketSerializer serializer = new PacketSerializer(channel.alloc().buffer());
         serializer.writeByte(packet.getPid());
 

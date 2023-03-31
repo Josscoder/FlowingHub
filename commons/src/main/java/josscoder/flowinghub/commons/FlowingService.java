@@ -1,5 +1,6 @@
 package josscoder.flowinghub.commons;
 
+import io.netty.channel.ChannelFuture;
 import josscoder.flowinghub.commons.data.ServiceInfo;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +17,7 @@ public abstract class FlowingService {
         this.logger = LogManager.getLogger(FlowingService.class);
     }
 
-    public abstract void startup() throws InterruptedException;
+    public abstract ChannelFuture startup() throws InterruptedException;
 
     public abstract void shutdown();
 }

@@ -1,3 +1,4 @@
+import io.netty.channel.ChannelFuture;
 import josscoder.flowinghub.client.FlowingClient;
 import josscoder.flowinghub.commons.data.ServiceInfo;
 
@@ -11,7 +12,21 @@ public class TestClient {
                 .build());
 
         try {
-            flowingClient.startup();
+            ChannelFuture future = flowingClient.startup();
+
+            Thread.sleep(5000);
+
+            if (future.isSuccess()) {
+                /*System.out.println("Enviando mensaje al servidor");
+                flowingClient.sendPacket(new MessagePacket(){{
+                    message = "Hola";
+                }});*/
+            }
+
+            Thread.sleep(500);
+
+            System.out.println("Apagando sistemas! buena noches");
+            flowingClient.shutdown();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
