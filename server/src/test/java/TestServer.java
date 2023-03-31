@@ -1,20 +1,19 @@
 import josscoder.flowinghub.commons.data.ServiceInfo;
-import josscoder.flowinghub.server.NetServer;
 
 public class TestServer {
 
     public static void main(String[] args) {
-        NetServer netServer = new NetServer(ServiceInfo.builder()
+        josscoder.flowinghub.server.FlowingServer flowingServer = new josscoder.flowinghub.server.FlowingServer(ServiceInfo.builder()
                 .port(11111)
                 .id("server-1")
                 .build());
 
         try {
-            netServer.startup();
+            flowingServer.startup();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            netServer.shutdown();
+            flowingServer.shutdown();
         }
     }
 }

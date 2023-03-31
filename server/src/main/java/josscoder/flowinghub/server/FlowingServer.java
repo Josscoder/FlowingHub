@@ -20,10 +20,10 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NetServer extends josscoder.flowinghub.commons.FlowingService {
+public class FlowingServer extends josscoder.flowinghub.commons.FlowingService {
 
     @Getter
-    private static NetServer instance;
+    private static josscoder.flowinghub.server.FlowingServer instance;
 
     private Channel channel;
     private NioEventLoopGroup bossGroup;
@@ -32,7 +32,7 @@ public class NetServer extends josscoder.flowinghub.commons.FlowingService {
     @Getter
     private final Map<InetSocketAddress, Channel> clientSessions = new HashMap<>();
 
-    public NetServer(ServiceInfo serviceInfo) {
+    public FlowingServer(ServiceInfo serviceInfo) {
         super(serviceInfo);
 
         instance = this;
@@ -52,7 +52,7 @@ public class NetServer extends josscoder.flowinghub.commons.FlowingService {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new PacketDecoder());
                             pipeline.addLast(new PacketEncoder());
-                            pipeline.addLast(new ServerPacketHandler(NetServer.getInstance()));
+                            pipeline.addLast(new ServerPacketHandler(josscoder.flowinghub.server.FlowingServer.getInstance()));
                         }
                     });
 

@@ -1,12 +1,11 @@
 package josscoder.flowinghub.client.handler;
 
-import josscoder.flowinghub.client.NetClient;
 import josscoder.flowinghub.commons.packet.Packet;
 import josscoder.flowinghub.commons.pipeline.PacketHandler;
 
-public class ClientPacketHandler extends PacketHandler<NetClient> {
+public class ClientPacketHandler extends PacketHandler<josscoder.flowinghub.client.FlowingClient> {
 
-    public ClientPacketHandler(NetClient service) {
+    public ClientPacketHandler(josscoder.flowinghub.client.FlowingClient service) {
         super(service);
     }
 

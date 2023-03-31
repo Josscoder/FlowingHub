@@ -18,15 +18,15 @@ import lombok.Getter;
 
 import java.net.InetSocketAddress;
 
-public class NetClient extends josscoder.flowinghub.commons.FlowingService {
+public class FlowingClient extends josscoder.flowinghub.commons.FlowingService {
 
     @Getter
-    private static NetClient instance;
+    private static josscoder.flowinghub.client.FlowingClient instance;
 
     private Channel channel;
     private NioEventLoopGroup group;
 
-    public NetClient(ServiceInfo serviceInfo) {
+    public FlowingClient(ServiceInfo serviceInfo) {
         super(serviceInfo);
 
         instance = this;
@@ -48,7 +48,7 @@ public class NetClient extends josscoder.flowinghub.commons.FlowingService {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new PacketEncoder());
                             pipeline.addLast(new PacketDecoder());
-                            pipeline.addLast(new ClientPacketHandler(NetClient.getInstance()));
+                            pipeline.addLast(new ClientPacketHandler(josscoder.flowinghub.client.FlowingClient.getInstance()));
                         }
                     });
 

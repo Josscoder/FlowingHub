@@ -3,13 +3,12 @@ package josscoder.flowinghub.server.pipeline;
 import io.netty.channel.ChannelHandlerContext;
 import josscoder.flowinghub.commons.packet.Packet;
 import josscoder.flowinghub.commons.pipeline.PacketHandler;
-import josscoder.flowinghub.server.NetServer;
 
 import java.net.InetSocketAddress;
 
-public class ServerPacketHandler extends PacketHandler<NetServer> {
+public class ServerPacketHandler extends PacketHandler<josscoder.flowinghub.server.FlowingServer> {
 
-    public ServerPacketHandler(NetServer service) {
+    public ServerPacketHandler(josscoder.flowinghub.server.FlowingServer service) {
         super(service);
     }
 
