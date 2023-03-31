@@ -64,9 +64,10 @@ public class FlowingClient extends FlowingService {
         return future;
     }
 
-    public void sendPacket(Packet packet) {
+    @Override
+    public CompletableFuture<Void> sendPacket(Packet packet) {
         if (channel == null || !channel.isOpen()) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
         PacketSerializer serializer = new PacketSerializer(channel.alloc().buffer());
@@ -74,11 +75,15 @@ public class FlowingClient extends FlowingService {
 
         packet.encode(serializer);
 
-        Runnable runnable = () -> channel.writeAndFlush(serializer.buffer()).addListener(future -> {
-            if (!future.isSuccess()) {
-                logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), future.cause());
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        Runnable runnable = () -> channel.writeAndFlush(serializer.buffer()).addListener(channelFuture -> {
+            if (!channelFuture.isSuccess()) {
+                future.completeExceptionally(channelFuture.cause());
+                logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), channelFuture.cause());
             } else {
                 logger.debug("Packet {} was sent", packet.getClass().getSimpleName());
+                future.complete(null);
             }
         });
 
@@ -87,6 +92,8 @@ public class FlowingClient extends FlowingService {
         } else {
             runnable.run();
         }
+
+        return future;
     }
 
     @Override

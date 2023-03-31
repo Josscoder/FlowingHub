@@ -1,5 +1,6 @@
 package josscoder.flowinghub.server;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -15,7 +16,9 @@ import josscoder.flowinghub.server.pipeline.ServerPacketHandler;
 import lombok.Getter;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -78,10 +81,10 @@ public class FlowingServer extends FlowingService {
         return future;
     }
 
-
-    public void sendPacket(InetSocketAddress inetSocketAddress, Packet packet) {
+    @CanIgnoreReturnValue
+    public CompletableFuture<Void> sendPacket(InetSocketAddress address, Packet packet) {
         if (channel == null || !channel.isOpen()) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
         PacketSerializer serializer = new PacketSerializer(channel.alloc().buffer());
@@ -89,11 +92,14 @@ public class FlowingServer extends FlowingService {
 
         packet.encode(serializer);
 
-        Channel connection = clientSessions.get(inetSocketAddress);
-        Runnable runnable = () -> connection.writeAndFlush(serializer.buffer()).addListener(future -> {
-            if (!future.isSuccess()) {
-                logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), future.cause());
+        Channel connection = clientSessions.get(address);
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        Runnable runnable = () -> connection.writeAndFlush(serializer.buffer()).addListener(channelFuture -> {
+            if (!channelFuture.isSuccess()) {
+                future.completeExceptionally(channelFuture.cause());
+                logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), channelFuture.cause());
             } else {
+                future.complete(null);
                 logger.debug("Packet {} was sent", packet.getClass().getSimpleName());
             }
         });
@@ -103,10 +109,30 @@ public class FlowingServer extends FlowingService {
         } else {
             runnable.run();
         }
+
+        return future;
     }
 
-    public void sendPacket(Packet packet) {
-        clientSessions.keySet().forEach(clientSession -> sendPacket(clientSession, packet));
+    @Override
+    public CompletableFuture<Void> sendPacket(Packet packet) {
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        clientSessions.keySet().forEach(address -> {
+            CompletableFuture<Void> future = new CompletableFuture<>();
+
+            CompletableFuture<Void> sendFuture = sendPacket(address, packet);
+            sendFuture.whenComplete((v, ex) -> {
+                if (ex != null) {
+                    future.completeExceptionally(ex);
+                } else {
+                    future.complete(null);
+                }
+            });
+
+            futures.add(future);
+        });
+
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
     }
 
     @Override
