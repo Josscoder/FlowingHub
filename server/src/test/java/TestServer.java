@@ -7,6 +7,7 @@ public class TestServer {
         FlowingServer flowingServer = new FlowingServer(ServiceInfo.builder()
                 .port(11111)
                 .id("server-1")
+                .authToken("123")
                 .build());
 
         try {

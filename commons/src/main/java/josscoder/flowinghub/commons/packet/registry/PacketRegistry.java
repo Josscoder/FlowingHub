@@ -1,6 +1,8 @@
 package josscoder.flowinghub.commons.packet.registry;
 
 import josscoder.flowinghub.commons.packet.Packet;
+import josscoder.flowinghub.commons.packet.base.AuthRequestPacket;
+import josscoder.flowinghub.commons.packet.base.AuthResponsePacket;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -10,6 +12,13 @@ import java.util.Map;
 public class PacketRegistry {
 
     private static final Map<Byte, Class<? extends Packet>> PACKETS = new HashMap<>();
+
+    static {
+        registerPacket(
+                new AuthRequestPacket(),
+                new AuthResponsePacket()
+        );
+    }
 
     public static void registerPacket(Packet ...packets) {
         Arrays.stream(packets).forEach(packet -> PACKETS.put(packet.getPid(), packet.getClass()));

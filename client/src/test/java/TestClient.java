@@ -9,6 +9,7 @@ public class TestClient {
                 .address("0.0.0.0")
                 .port(11111)
                 .id("client-1")
+                .authToken("123")
                 .build());
 
         try {

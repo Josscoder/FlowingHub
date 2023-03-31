@@ -9,6 +9,7 @@ import josscoder.flowinghub.client.handler.ClientPacketHandler;
 import josscoder.flowinghub.commons.FlowingService;
 import josscoder.flowinghub.commons.data.ServiceInfo;
 import josscoder.flowinghub.commons.packet.Packet;
+import josscoder.flowinghub.commons.packet.base.AuthRequestPacket;
 import josscoder.flowinghub.commons.pipeline.PacketDecoder;
 import josscoder.flowinghub.commons.pipeline.PacketEncoder;
 import josscoder.flowinghub.commons.utils.PacketSerializer;
@@ -53,8 +54,12 @@ public class FlowingClient extends FlowingService {
         ChannelFuture future = bootstrap.connect();
         future.addListener(addFuture -> {
             if (addFuture.isSuccess()) {
-                logger.info("FlowingClient has successfully connected to FlowingServer-TCP{}", inetSocketAddress);
+                logger.warn("FlowingClient has successfully connected to FlowingServer-TCP{}, authenticating....", inetSocketAddress);
                 channel = future.channel();
+
+                AuthRequestPacket authRequestPacket = new AuthRequestPacket();
+                authRequestPacket.authToken = serviceInfo.getAuthToken();
+                sendPacket(authRequestPacket);
             } else {
                 logger.error("No active FlowingServer found to connect to");
                 channel = null;

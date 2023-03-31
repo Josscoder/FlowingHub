@@ -8,6 +8,7 @@ import lombok.Getter;
 public class ServiceInfo {
 
     private final String address; //client only
-    private final int port; //client-server
-    private final String id; //client-server
+    private final int port;
+    private final String id;
+    private final String authToken;
 }
