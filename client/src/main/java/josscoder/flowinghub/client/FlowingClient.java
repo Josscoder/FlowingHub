@@ -1,7 +1,6 @@
 package josscoder.flowinghub.client;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -70,11 +69,12 @@ public class FlowingClient extends FlowingService {
     }
 
     public void sendPacket(Packet packet) {
-        ByteBuf buffer = channel.alloc().buffer();
-        buffer.writeByte(packet.getPid());
-        packet.encode(new PacketSerializer(buffer));
+        PacketSerializer serializer = new PacketSerializer(channel.alloc().buffer());
+        serializer.writeByte(packet.getPid());
 
-        channel.writeAndFlush(buffer).addListener(future -> {
+        packet.encode(serializer);
+
+        channel.writeAndFlush(serializer.buffer()).addListener(future -> {
             if (!future.isSuccess()) {
                 logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), future.cause());
             } else {
