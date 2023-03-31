@@ -13,8 +13,8 @@ public abstract class PacketHandler<T extends FlowingService> extends ChannelInb
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof Packet) {
-            handlePacket((Packet) msg);
+        if (msg instanceof Packet packet) {
+            handlePacket(packet);
         } else {
             super.channelRead(ctx, msg);
         }
