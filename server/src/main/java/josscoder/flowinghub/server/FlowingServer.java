@@ -17,6 +17,7 @@ import lombok.Getter;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class FlowingServer extends FlowingService {
 
@@ -89,13 +90,19 @@ public class FlowingServer extends FlowingService {
         packet.encode(serializer);
 
         Channel connection = clientSessions.get(inetSocketAddress);
-        connection.writeAndFlush(serializer.buffer()).addListener(future -> {
+        Runnable runnable = () -> connection.writeAndFlush(serializer.buffer()).addListener(future -> {
             if (!future.isSuccess()) {
                 logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), future.cause());
             } else {
                 logger.debug("Packet {} was sent", packet.getClass().getSimpleName());
             }
         });
+
+        if (packet.isAsync()) {
+            CompletableFuture.runAsync(runnable);
+        } else {
+            runnable.run();
+        }
     }
 
     public void sendPacket(Packet packet) {

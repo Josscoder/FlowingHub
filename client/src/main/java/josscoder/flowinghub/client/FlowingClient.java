@@ -15,6 +15,7 @@ import josscoder.flowinghub.commons.utils.PacketSerializer;
 import lombok.Getter;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.CompletableFuture;
 
 public class FlowingClient extends FlowingService {
 
@@ -73,13 +74,19 @@ public class FlowingClient extends FlowingService {
 
         packet.encode(serializer);
 
-        channel.writeAndFlush(serializer.buffer()).addListener(future -> {
+        Runnable runnable = () -> channel.writeAndFlush(serializer.buffer()).addListener(future -> {
             if (!future.isSuccess()) {
                 logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), future.cause());
             } else {
                 logger.debug("Packet {} was sent", packet.getClass().getSimpleName());
             }
         });
+
+        if (packet.isAsync()) {
+            CompletableFuture.runAsync(runnable);
+        } else {
+            runnable.run();
+        }
     }
 
     @Override
