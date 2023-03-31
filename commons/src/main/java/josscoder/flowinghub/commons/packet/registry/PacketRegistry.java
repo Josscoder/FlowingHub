@@ -2,6 +2,7 @@ package josscoder.flowinghub.commons.packet.registry;
 
 import josscoder.flowinghub.commons.packet.Packet;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +19,9 @@ public class PacketRegistry {
         Class<? extends Packet> clazz = PACKETS.get(pid);
         if (clazz != null) {
             try {
-                return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                return clazz.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
         } else {

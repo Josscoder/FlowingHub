@@ -1,9 +1,10 @@
 import josscoder.flowinghub.commons.data.ServiceInfo;
+import josscoder.flowinghub.server.FlowingServer;
 
 public class TestServer {
 
     public static void main(String[] args) {
-        josscoder.flowinghub.server.FlowingServer flowingServer = new josscoder.flowinghub.server.FlowingServer(ServiceInfo.builder()
+        FlowingServer flowingServer = new FlowingServer(ServiceInfo.builder()
                 .port(11111)
                 .id("server-1")
                 .build());
