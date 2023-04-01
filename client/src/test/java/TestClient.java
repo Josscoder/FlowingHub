@@ -1,7 +1,12 @@
 import io.netty.channel.ChannelFuture;
 import josscoder.flowinghub.client.FlowingClient;
 import josscoder.flowinghub.commons.data.ServiceInfo;
+import josscoder.flowinghub.commons.packet.BasicPacket;
+import josscoder.flowinghub.commons.packet.BatchPacket;
 import josscoder.flowinghub.commons.packet.base.MessagePacket;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestClient {
 
@@ -19,10 +24,18 @@ public class TestClient {
             Thread.sleep(5000);
 
             if (future.isSuccess()) {
-                System.out.println("Sending message");
-                flowingClient.sendPacket(new MessagePacket(){{
-                    message = "Hello world";
-                }});
+                List<BasicPacket> packets = new ArrayList<>();
+
+                for (int i = 0; i < 100; i++) {
+                    System.out.println("Sending message");
+                    MessagePacket packet = new MessagePacket();
+                    packet.message = "Hello world = " + i;
+                    packets.add(packet);
+                }
+
+                BatchPacket batchPacket = new BatchPacket();
+                batchPacket.packets = packets;
+                flowingClient.sendPacket(batchPacket);
             }
 
             Thread.sleep(500);

@@ -1,36 +1,37 @@
 package josscoder.flowinghub.commons.packet;
 
-import josscoder.flowinghub.commons.packet.registry.PacketRegistry;
+import io.netty.buffer.ByteBuf;
+import josscoder.flowinghub.commons.packet.codec.ProtocolCodec;
 import josscoder.flowinghub.commons.utils.PacketSerializer;
 
 import java.util.List;
 
-public abstract class BatchPacket extends Packet {
+public class BatchPacket extends Packet {
 
-    public List<Packet> packets;
+    public List<BasicPacket> packets;
 
-    public BatchPacket(byte pid) {
-        super(pid);
+    public BatchPacket() {
+        super(ProtocolInfo.BATCH_PACKET);
     }
 
     @Override
     public void encode(PacketSerializer serializer) {
         serializer.writeInt(packets.size());
-        packets.forEach(packet -> {
-            serializer.writeByte(packet.getPid());
-            packet.encode(serializer);
-        });
+        packets.forEach(packet -> ProtocolCodec.encodePacketIntoSerializer(serializer, packet));
     }
 
     @Override
     public void decode(PacketSerializer serializer) {
         int size = serializer.readInt();
         for (int i = 0; i < size; i++) {
-            byte pid = serializer.readByte();
+            ByteBuf buf = serializer.buffer();
 
-            Packet packet = PacketRegistry.createPacketInstance(pid);
+            if (buf.readableBytes() < 1) {
+                continue;
+            }
+
+            BasicPacket packet = (BasicPacket) ProtocolCodec.decodePacketFromBuf(buf);
             if (packet != null) {
-                packet.decode(serializer);
                 packets.add(packet);
             }
         }

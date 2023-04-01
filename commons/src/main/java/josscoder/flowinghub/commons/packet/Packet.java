@@ -18,16 +18,4 @@ public abstract class Packet {
     public boolean isAsyncPacket() {
         return getClass().isAnnotationPresent(AsyncPacket.class);
     }
-
-    public boolean isBasicPacket() {
-        return this instanceof BasicPacket;
-    }
-
-    public boolean isBatchPacket() {
-        return this instanceof BatchPacket;
-    }
-
-    public boolean isWeightyPacket() {
-        return this instanceof WeightyPacket;
-    }
 }

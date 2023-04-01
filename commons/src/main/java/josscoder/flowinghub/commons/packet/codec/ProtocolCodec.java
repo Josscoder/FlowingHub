@@ -46,14 +46,18 @@ public class ProtocolCodec {
         }
     }
 
-    public static void mainEncode(ByteBuf buf, Packet packet) {
-        PacketSerializer serializer = new PacketSerializer(buf);
+    public static void encodePacketIntoSerializer(PacketSerializer serializer, Packet packet) {
         serializer.writeByte(packet.getPid());
-
         packet.encode(serializer);
     }
 
-    public static Packet mainDecode(ByteBuf buf) {
+    public static void encodePacketIntoBuf(ByteBuf buf, Packet packet) {
+        PacketSerializer serializer = new PacketSerializer(buf);
+        serializer.writeByte(packet.getPid());
+        packet.encode(serializer);
+    }
+
+    public static Packet decodePacketFromBuf(ByteBuf buf) {
         if (buf.readableBytes() < 1) {
             return null;
         }
@@ -61,11 +65,11 @@ public class ProtocolCodec {
         byte pid = buf.readByte();
 
         Packet packet = ProtocolCodec.createPacketInstance(pid);
-        if (packet != null) {
-            packet.decode(new PacketSerializer(buf));
-            return packet;
+        if (packet == null) {
+            return null;
         }
 
-        return null;
+        packet.decode(new PacketSerializer(buf));
+        return packet;
     }
 }

@@ -4,8 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import josscoder.flowinghub.commons.packet.Packet;
-import josscoder.flowinghub.commons.packet.registry.PacketRegistry;
-import josscoder.flowinghub.commons.utils.PacketSerializer;
+import josscoder.flowinghub.commons.packet.codec.ProtocolCodec;
 
 import java.util.List;
 
@@ -17,11 +16,8 @@ public class PacketDecoder extends ByteToMessageDecoder {
             return;
         }
 
-        byte pid = in.readByte();
-
-        Packet packet = PacketRegistry.createPacketInstance(pid);
+        Packet packet = ProtocolCodec.decodePacketFromBuf(in);
         if (packet != null) {
-            packet.decode(new PacketSerializer(in));
             out.add(packet);
         }
     }

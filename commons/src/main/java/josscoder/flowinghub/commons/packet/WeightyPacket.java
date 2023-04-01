@@ -2,38 +2,41 @@ package josscoder.flowinghub.commons.packet;
 
 import josscoder.flowinghub.commons.utils.PacketSerializer;
 import org.xerial.snappy.Snappy;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import java.io.IOException;
 
-public abstract class WeightyPacket extends Packet {
+public class WeightyPacket extends Packet {
 
-    public byte[] data;
+    public ByteBuf data;
 
-    public WeightyPacket(byte pid) {
-        super(pid);
+    public WeightyPacket() {
+        super(ProtocolInfo.WEIGHTY_PACKET);
     }
 
-    @Override
     public void encode(PacketSerializer serializer) {
-        byte[] compressedData;
+        byte[] bytesToWrite;
 
         try {
-            compressedData = Snappy.compress(data);
+            byte[] uncompressedData = new byte[data.readableBytes()];
+            data.readBytes(uncompressedData);
+            byte[] compressedData = Snappy.compress(uncompressedData);
+            bytesToWrite = compressedData.length < uncompressedData.length ? compressedData : uncompressedData;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            data.release();
         }
 
-        serializer.writeBoolean(compressedData.length < data.length);
-        serializer.writeBytes(compressedData.length < data.length ? compressedData : data);
+        serializer.writeBytes(bytesToWrite);
     }
 
-    @Override
     public void decode(PacketSerializer serializer) {
-        boolean isCompressed = serializer.readBoolean();
-        byte[] data = serializer.readBytes();
+        byte[] dataBytes = serializer.readBytes();
 
         try {
-            this.data = isCompressed ? Snappy.uncompress(data) : data;
+            byte[] uncompressedData = Snappy.uncompress(dataBytes);
+            this.data = Unpooled.wrappedBuffer(uncompressedData);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

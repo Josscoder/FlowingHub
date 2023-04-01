@@ -1,18 +1,22 @@
 package josscoder.flowinghub.client;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import josscoder.flowinghub.client.handler.ClientPacketHandler;
+import josscoder.flowinghub.client.pipeline.ClientPacketHandler;
 import josscoder.flowinghub.commons.FlowingService;
 import josscoder.flowinghub.commons.data.ServiceInfo;
 import josscoder.flowinghub.commons.packet.Packet;
 import josscoder.flowinghub.commons.packet.base.AuthRequestPacket;
+import josscoder.flowinghub.commons.packet.codec.ProtocolCodec;
 import josscoder.flowinghub.commons.pipeline.PacketDecoder;
 import josscoder.flowinghub.commons.pipeline.PacketEncoder;
-import josscoder.flowinghub.commons.utils.PacketSerializer;
 import lombok.Getter;
 
 import java.net.InetSocketAddress;
@@ -75,22 +79,28 @@ public class FlowingClient extends FlowingService {
             return CompletableFuture.completedFuture(null);
         }
 
-        PacketSerializer serializer = new PacketSerializer(channel.alloc().buffer());
-        serializer.writeByte(packet.getPid());
-
-        packet.encode(serializer);
+        ByteBuf buffer = channel.alloc().buffer();
+        ProtocolCodec.encodePacketIntoBuf(buffer, packet);
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        Runnable runnable = () -> channel.writeAndFlush(serializer.buffer()).addListener(channelFuture -> {
-            if (!channelFuture.isSuccess()) {
-                future.completeExceptionally(channelFuture.cause());
-                logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), channelFuture.cause());
-            } else {
-                logger.debug("Packet {} was sent", packet.getClass().getSimpleName());
-                future.complete(null);
+        Runnable runnable = () -> {
+            buffer.retain();
+
+            try {
+                channel.writeAndFlush(buffer).addListener(channelFuture -> {
+                    if (!channelFuture.isSuccess()) {
+                        future.completeExceptionally(channelFuture.cause());
+                        logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), channelFuture.cause());
+                    } else {
+                        logger.debug("Packet {} was sent", packet.getClass().getSimpleName());
+                        future.complete(null);
+                    }
+                });
+            } finally {
+                buffer.release();
             }
-        });
+        };
 
         if (packet.isAsyncPacket()) {
             CompletableFuture.runAsync(runnable);
