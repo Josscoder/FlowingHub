@@ -16,7 +16,6 @@ import josscoder.flowinghub.commons.protocol.packet.Packet;
 import josscoder.flowinghub.commons.protocol.packet.base.AuthRequestPacket;
 import josscoder.flowinghub.commons.protocol.codec.ProtocolCodec;
 import josscoder.flowinghub.commons.pipeline.PacketDecoder;
-import josscoder.flowinghub.commons.pipeline.PacketEncoder;
 import lombok.Getter;
 
 import java.net.InetSocketAddress;
@@ -49,7 +48,6 @@ public class FlowingClient extends FlowingService {
                     @Override
                     protected void initChannel(SocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new PacketEncoder());
                         pipeline.addLast(new PacketDecoder());
                         pipeline.addLast(new ClientPacketHandler(FlowingClient.getInstance()));
                     }

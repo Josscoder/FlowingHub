@@ -11,7 +11,6 @@ import josscoder.flowinghub.commons.data.ServiceInfo;
 import josscoder.flowinghub.commons.protocol.packet.Packet;
 import josscoder.flowinghub.commons.protocol.codec.ProtocolCodec;
 import josscoder.flowinghub.commons.pipeline.PacketDecoder;
-import josscoder.flowinghub.commons.pipeline.PacketEncoder;
 import josscoder.flowinghub.server.pipeline.ServerPacketHandler;
 import lombok.Getter;
 
@@ -56,7 +55,6 @@ public class FlowingServer extends FlowingService {
                         protected void initChannel(SocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new PacketDecoder());
-                            pipeline.addLast(new PacketEncoder());
                             pipeline.addLast(new ServerPacketHandler(FlowingServer.getInstance()));
                         }
                     });
