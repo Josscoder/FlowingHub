@@ -86,9 +86,8 @@ public class FlowingClient extends FlowingService {
 
         Runnable runnable = () -> {
             buffer.retain();
-
-            try {
-                channel.writeAndFlush(buffer).addListener(channelFuture -> {
+            channel.writeAndFlush(buffer).addListener(channelFuture -> {
+                try {
                     if (!channelFuture.isSuccess()) {
                         future.completeExceptionally(channelFuture.cause());
                         logger.warn("Error sending the packet {}: ", packet.getClass().getSimpleName(), channelFuture.cause());
@@ -96,10 +95,10 @@ public class FlowingClient extends FlowingService {
                         logger.debug("Packet {} was sent", packet.getClass().getSimpleName());
                         future.complete(null);
                     }
-                });
-            } finally {
-                buffer.release();
-            }
+                } finally {
+                    buffer.release();
+                }
+            });
         };
 
         if (packet.isAsyncPacket()) {
