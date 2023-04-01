@@ -1,4 +1,4 @@
-package josscoder.flowinghub.client.handler;
+package josscoder.flowinghub.client.pipeline;
 
 import josscoder.flowinghub.client.FlowingClient;
 import josscoder.flowinghub.commons.packet.Packet;

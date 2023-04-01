@@ -1,10 +1,10 @@
 package josscoder.flowinghub.commons.packet.base;
 
-import josscoder.flowinghub.commons.packet.Packet;
+import josscoder.flowinghub.commons.packet.BasicPacket;
 import josscoder.flowinghub.commons.packet.ProtocolInfo;
 import josscoder.flowinghub.commons.utils.PacketSerializer;
 
-public class AuthRequestPacket extends Packet {
+public class AuthRequestPacket extends BasicPacket {
 
     public String authToken;
 

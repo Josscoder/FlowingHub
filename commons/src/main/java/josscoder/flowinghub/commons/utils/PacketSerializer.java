@@ -66,6 +66,10 @@ public record PacketSerializer(@Getter ByteBuf buffer) {
     }
 
     public byte[] readBytes() {
-        return buffer.readBytes(buffer.readInt()).array();
+        int length = buffer.readInt();
+        byte[] data = new byte[length];
+        buffer.readBytes(data);
+
+        return data;
     }
 }

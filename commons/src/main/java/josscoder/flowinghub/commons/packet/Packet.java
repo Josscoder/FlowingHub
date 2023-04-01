@@ -15,19 +15,19 @@ public abstract class Packet {
 
     public abstract void decode(PacketSerializer serializer);
 
-    public boolean isBasicPacket() {
-        return !isAsyncPacket() && !isWeightyPacket() && !isBatchPacket();
-    }
-
     public boolean isAsyncPacket() {
         return getClass().isAnnotationPresent(AsyncPacket.class);
     }
 
-    public boolean isWeightyPacket() {
-        return this instanceof WeightyPacket;
+    public boolean isBasicPacket() {
+        return this instanceof BasicPacket;
     }
 
     public boolean isBatchPacket() {
         return this instanceof BatchPacket;
+    }
+
+    public boolean isWeightyPacket() {
+        return this instanceof WeightyPacket;
     }
 }

@@ -73,7 +73,7 @@ public class ServerPacketHandler extends PacketHandler<josscoder.flowinghub.serv
     @Override
     public void handlePacket(Packet packet) {
         if (packet instanceof MessagePacket messagePacket) {
-            System.out.println("Message received " + messagePacket.message);
+            System.out.println("Message received: " + messagePacket.message);
         }
     }
 }
