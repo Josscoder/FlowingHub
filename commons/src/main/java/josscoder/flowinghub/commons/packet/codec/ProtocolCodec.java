@@ -1,6 +1,7 @@
 package josscoder.flowinghub.commons.packet.codec;
 
 import io.netty.buffer.ByteBuf;
+import josscoder.flowinghub.commons.packet.BatchPacket;
 import josscoder.flowinghub.commons.packet.Packet;
 import josscoder.flowinghub.commons.packet.base.AuthRequestPacket;
 import josscoder.flowinghub.commons.packet.base.AuthResponsePacket;
@@ -20,7 +21,8 @@ public class ProtocolCodec {
         registerPacket(
                 new AuthRequestPacket(),
                 new AuthResponsePacket(),
-                new MessagePacket()
+                new MessagePacket(),
+                new BatchPacket()
         );
     }
 
