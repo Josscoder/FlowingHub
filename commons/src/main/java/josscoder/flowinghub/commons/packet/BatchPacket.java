@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import josscoder.flowinghub.commons.packet.codec.ProtocolCodec;
 import josscoder.flowinghub.commons.utils.PacketSerializer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BatchPacket extends Packet {
@@ -22,7 +23,13 @@ public class BatchPacket extends Packet {
 
     @Override
     public void decode(PacketSerializer serializer) {
+        if (true) {
+            throw new RuntimeException("test");
+        }
+
         int size = serializer.readInt();
+        packets = new ArrayList<>();
+
         for (int i = 0; i < size; i++) {
             ByteBuf buf = serializer.buffer();
 

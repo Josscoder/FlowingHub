@@ -1,11 +1,10 @@
 package josscoder.flowinghub.commons.utils;
 
 import io.netty.buffer.ByteBuf;
-import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
 
-public record PacketSerializer(@Getter ByteBuf buffer) {
+public record PacketSerializer(ByteBuf buffer) {
 
     public void writeString(String charset) {
         byte[] bytes = charset.getBytes(StandardCharsets.UTF_8);
@@ -14,9 +13,13 @@ public record PacketSerializer(@Getter ByteBuf buffer) {
     }
 
     public String readString() {
-        byte[] bytes = new byte[buffer.readInt()];
-        buffer.readBytes(bytes);
+        int length = buffer.readInt();
+        if (buffer.readableBytes() < length) {
+            throw new RuntimeException("Not enough bytes available to read the string");
+        }
 
+        byte[] bytes = new byte[length];
+        buffer.readBytes(bytes);
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
