@@ -1,4 +1,4 @@
-package josscoder.flowinghub.commons.packet.annotation;
+package josscoder.flowinghub.commons.protocol.packet.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

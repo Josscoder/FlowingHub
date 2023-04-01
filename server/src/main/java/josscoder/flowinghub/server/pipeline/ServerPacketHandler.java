@@ -3,10 +3,10 @@ package josscoder.flowinghub.server.pipeline;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 import josscoder.flowinghub.commons.data.ServiceInfo;
-import josscoder.flowinghub.commons.packet.Packet;
-import josscoder.flowinghub.commons.packet.base.AuthRequestPacket;
-import josscoder.flowinghub.commons.packet.base.AuthResponsePacket;
-import josscoder.flowinghub.commons.packet.base.MessagePacket;
+import josscoder.flowinghub.commons.protocol.packet.Packet;
+import josscoder.flowinghub.commons.protocol.packet.base.AuthRequestPacket;
+import josscoder.flowinghub.commons.protocol.packet.base.AuthResponsePacket;
+import josscoder.flowinghub.commons.protocol.packet.base.MessagePacket;
 import josscoder.flowinghub.commons.pipeline.PacketHandler;
 import josscoder.flowinghub.server.FlowingServer;
 

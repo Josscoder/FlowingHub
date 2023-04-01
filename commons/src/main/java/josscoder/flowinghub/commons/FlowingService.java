@@ -2,7 +2,7 @@ package josscoder.flowinghub.commons;
 
 import io.netty.channel.ChannelFuture;
 import josscoder.flowinghub.commons.data.ServiceInfo;
-import josscoder.flowinghub.commons.packet.Packet;
+import josscoder.flowinghub.commons.protocol.packet.Packet;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

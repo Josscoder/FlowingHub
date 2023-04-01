@@ -1,4 +1,4 @@
-package josscoder.flowinghub.commons.packet;
+package josscoder.flowinghub.commons.protocol.packet;
 
 public abstract class BasicPacket extends Packet {
 

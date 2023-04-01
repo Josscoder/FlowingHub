@@ -1,6 +1,6 @@
-package josscoder.flowinghub.commons.packet;
+package josscoder.flowinghub.commons.protocol.packet;
 
-import josscoder.flowinghub.commons.packet.annotation.AsyncPacket;
+import josscoder.flowinghub.commons.protocol.packet.annotation.AsyncPacket;
 import josscoder.flowinghub.commons.utils.PacketSerializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

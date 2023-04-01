@@ -3,8 +3,8 @@ package josscoder.flowinghub.commons.pipeline;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import josscoder.flowinghub.commons.FlowingService;
-import josscoder.flowinghub.commons.packet.BatchPacket;
-import josscoder.flowinghub.commons.packet.Packet;
+import josscoder.flowinghub.commons.protocol.packet.BatchPacket;
+import josscoder.flowinghub.commons.protocol.packet.Packet;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

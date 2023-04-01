@@ -1,11 +1,11 @@
-package josscoder.flowinghub.commons.packet.codec;
+package josscoder.flowinghub.commons.protocol.codec;
 
 import io.netty.buffer.ByteBuf;
-import josscoder.flowinghub.commons.packet.BatchPacket;
-import josscoder.flowinghub.commons.packet.Packet;
-import josscoder.flowinghub.commons.packet.base.AuthRequestPacket;
-import josscoder.flowinghub.commons.packet.base.AuthResponsePacket;
-import josscoder.flowinghub.commons.packet.base.MessagePacket;
+import josscoder.flowinghub.commons.protocol.packet.BatchPacket;
+import josscoder.flowinghub.commons.protocol.packet.Packet;
+import josscoder.flowinghub.commons.protocol.packet.base.AuthRequestPacket;
+import josscoder.flowinghub.commons.protocol.packet.base.AuthResponsePacket;
+import josscoder.flowinghub.commons.protocol.packet.base.MessagePacket;
 import josscoder.flowinghub.commons.utils.PacketSerializer;
 
 import java.lang.reflect.InvocationTargetException;

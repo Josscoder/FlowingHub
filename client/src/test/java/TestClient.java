@@ -1,9 +1,9 @@
 import io.netty.channel.ChannelFuture;
 import josscoder.flowinghub.client.FlowingClient;
 import josscoder.flowinghub.commons.data.ServiceInfo;
-import josscoder.flowinghub.commons.packet.BasicPacket;
-import josscoder.flowinghub.commons.packet.BatchPacket;
-import josscoder.flowinghub.commons.packet.base.MessagePacket;
+import josscoder.flowinghub.commons.protocol.packet.BasicPacket;
+import josscoder.flowinghub.commons.protocol.packet.BatchPacket;
+import josscoder.flowinghub.commons.protocol.packet.base.MessagePacket;
 
 import java.util.ArrayList;
 import java.util.List;

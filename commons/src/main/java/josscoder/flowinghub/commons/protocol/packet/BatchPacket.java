@@ -1,7 +1,8 @@
-package josscoder.flowinghub.commons.packet;
+package josscoder.flowinghub.commons.protocol.packet;
 
 import io.netty.buffer.ByteBuf;
-import josscoder.flowinghub.commons.packet.codec.ProtocolCodec;
+import josscoder.flowinghub.commons.protocol.codec.ProtocolCodec;
+import josscoder.flowinghub.commons.protocol.ProtocolInfo;
 import josscoder.flowinghub.commons.utils.PacketSerializer;
 
 import java.util.ArrayList;

@@ -3,8 +3,8 @@ package josscoder.flowinghub.commons.pipeline;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import josscoder.flowinghub.commons.packet.Packet;
-import josscoder.flowinghub.commons.packet.codec.ProtocolCodec;
+import josscoder.flowinghub.commons.protocol.packet.Packet;
+import josscoder.flowinghub.commons.protocol.codec.ProtocolCodec;
 
 import java.util.List;
 

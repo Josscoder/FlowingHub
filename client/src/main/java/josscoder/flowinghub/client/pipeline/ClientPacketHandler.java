@@ -1,8 +1,8 @@
 package josscoder.flowinghub.client.pipeline;
 
 import josscoder.flowinghub.client.FlowingClient;
-import josscoder.flowinghub.commons.packet.Packet;
-import josscoder.flowinghub.commons.packet.base.AuthResponsePacket;
+import josscoder.flowinghub.commons.protocol.packet.Packet;
+import josscoder.flowinghub.commons.protocol.packet.base.AuthResponsePacket;
 import josscoder.flowinghub.commons.pipeline.PacketHandler;
 
 public class ClientPacketHandler extends PacketHandler<FlowingClient> {
