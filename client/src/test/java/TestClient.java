@@ -26,8 +26,7 @@ public class TestClient {
             if (future.isSuccess()) {
                 List<BasicPacket> packets = new ArrayList<>();
 
-                for (int i = 0; i < 100; i++) {
-                    System.out.println("Sending message");
+                for (int i = 0; i < 75; i++) {
                     MessagePacket packet = new MessagePacket();
                     packet.message = "Hello world = " + i;
                     packets.add(packet);
