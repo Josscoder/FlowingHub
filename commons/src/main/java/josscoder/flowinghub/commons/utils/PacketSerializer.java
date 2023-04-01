@@ -8,16 +8,12 @@ import java.nio.charset.StandardCharsets;
 public record PacketSerializer(@Getter ByteBuf buffer) {
 
     public void writeString(String charset) {
-        byte[] bytes = charset.getBytes(StandardCharsets.UTF_8);
-        buffer.writeInt(bytes.length);
-        buffer.writeBytes(bytes);
+        buffer.writeInt(charset.length());
+        buffer.writeCharSequence(charset, StandardCharsets.UTF_8);
     }
 
     public String readString() {
-        byte[] bytes = new byte[buffer.readInt()];
-        buffer.readBytes(bytes);
-
-        return new String(bytes, StandardCharsets.UTF_8);
+        return buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString();
     }
 
     public void writeInt(int i) {
@@ -67,9 +63,13 @@ public record PacketSerializer(@Getter ByteBuf buffer) {
 
     public byte[] readBytes() {
         int length = buffer.readInt();
-        byte[] data = new byte[length];
-        buffer.readBytes(data);
-
-        return data;
+        if (length > buffer.readableBytes()) {
+            throw new IllegalStateException("Not enough bytes to read");
+        } else {
+            byte[] data = new byte[length];
+            buffer.readBytes(data);
+            return data;
+        }
     }
+
 }
